@@ -113,13 +113,13 @@
 
 \begin{center}\large
 \begin{tabular}{ll}
-\textbf{Grupo} nr. & 99 (preencher)
+\textbf{Grupo} nr. & 6 (preencher)
 \\\hline
-a11111 & Nome1 (preencher)	
+a89588 & João Pedro da Santa Guedes (preencher)	
 \\
-a22222 & Nome2 (preencher)	
+a89601 & Luís Pedro Oliveira de Castro Vieira (preencher)	
 \\
-a33333 & Nome3 (preencher)	
+a89529 & Pedro Miguel de Soveral Pacheco Barbosa (preencher)	
 \end{tabular}
 \end{center}
 
@@ -969,7 +969,8 @@ outras funções auxiliares que sejam necessárias.
 \subsection*{Problema 1}
 \begin{code}
 discollect :: (Ord b, Ord a) => [(b, [a])] -> [(b, a)]
-discollect = undefined
+discollect [] = []
+discollect ((a,x):y) = [(a,b)|b<-x] ++ discollect y
 
 dic_exp :: Dict -> [(String,[String])]
 dic_exp = collect . tar
