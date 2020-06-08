@@ -340,8 +340,21 @@ prop_dic_rd (p,t) = dic_rd  p t == lookup p (dic_exp t)
   Então a árvore binária está ordenada. Dada esta informação,
   implemente as seguintes funções como catamorfismos de árvores binárias.
 \begin{code}
+auxMaisEsq :: (a,(Maybe a,Maybe a)) -> Maybe a
+auxMaisEsq (h,(Nothing,r)) = Just h
+auxMaisEsq (_,(l,_)) = l  
+
 maisEsq :: BTree a -> Maybe a
+maisEsq = cataBTree g
+  where g = either (const Nothing) auxMaisEsq
+  
+auxMaisDir :: (a,(Maybe a,Maybe a)) -> Maybe a
+auxMaisDir (h,(l,Nothing)) = Just h 
+auxMaisDir (_,(_,r)) = r
+
 maisDir :: BTree a -> Maybe a
+maisDir = cataBTree g
+  where g = either (const Nothing) auxMaisDir
 \end{code}
   Seguem alguns exemplos dos resultados que se esperam ao aplicar
   estas funções à árvore da esquerda ($t1$) e à árvore da direita ($t2$)
