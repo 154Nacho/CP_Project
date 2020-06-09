@@ -42,37 +42,32 @@ f .==. g = \a -> f a == g a
 prop_inv :: BTree String -> Bool
 prop_inv = maisEsq .==. maisDir . invBTree
 
-insOrd' :: (Ord a) => a -> BTree a -> (BTree a, BTree a)
-insOrd' x = cataBTree g 
-  where g = split insOrd x a 
+auxisOrd :: (Ord a) => [a] -> Bool
+auxisOrd [] = True
+auxisOrd l | l == qSort(l) = True
+           | l /= qSort(l) = False
 
+isOrd' = cataBTree g
+  where g = inordt
 
-{- 
-insOrd :: (Ord a) ⇒ a → BTree a → BTree a
-insOrd a x = 
-
-
-
-
+isOrd :: (Ord a) => BTree a -> Bool
+isOrd = auxisOrd . isOrd´
 
 isOrd' = cataBTree g
   where g = undefined
 
-
 isOrd = undefined
 
 
-rrot = undefined
 
 
-lrot = undefined
+insOrd' x = cataBTree g 
+  where g = undefined
+
+insOrd a x = undefined
 
 
-splay l t =  undefined
--}
-
-
-{- Testes 
+{-Testes 
 *Splay> maisDir t1
     Just 16
 *Splay> maisEsq t1
@@ -81,7 +76,7 @@ splay l t =  undefined
     Just 8
 *Splay> maisEsq t2
     Just 0
-
+-}
 
 emp x = Node(x,(Empty,Empty))
 
@@ -96,6 +91,3 @@ t5_6_8 = Node(6, (emp 5, emp 8))
 t2 = Node(4, (t0_2_1, t5_6_8))
 
 
-
-
--}

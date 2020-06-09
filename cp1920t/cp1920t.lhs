@@ -1008,7 +1008,12 @@ insOrd a x = undefined
 isOrd' = cataBTree g
   where g = undefined
 
-isOrd = undefined
+auxisOrd :: (Ord a) => [a] -> Bool
+auxisOrd [] = True
+auxisOrd l | l == qSort(l) = True
+           | l /= qSort(l) = False
+
+isOrd = auxisOrd . inordt 
 
 
 rrot = undefined
