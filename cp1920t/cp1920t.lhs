@@ -113,13 +113,13 @@
 
 \begin{center}\large
 \begin{tabular}{ll}
-\textbf{Grupo} nr. & 6 (preencher)
+\textbf{Grupo} nr. & 99 (preencher)
 \\\hline
-a89588 & João Pedro da Santa Guedes (preencher)	
+a11111 & Nome1 (preencher)	
 \\
-a89601 & Luís Pedro Oliveira de Castro Vieira (preencher)	
+a22222 & Nome2 (preencher)	
 \\
-a89529 & Pedro Miguel de Soveral Pacheco Barbosa (preencher)	
+a33333 & Nome3 (preencher)	
 \end{tabular}
 \end{center}
 
@@ -340,21 +340,8 @@ prop_dic_rd (p,t) = dic_rd  p t == lookup p (dic_exp t)
   Então a árvore binária está ordenada. Dada esta informação,
   implemente as seguintes funções como catamorfismos de árvores binárias.
 \begin{code}
-auxMaisEsq :: (a,(Maybe a,Maybe a)) -> Maybe a
-auxMaisEsq (h,(Nothing,r)) = Just h
-auxMaisEsq (_,(l,_)) = l  
-
 maisEsq :: BTree a -> Maybe a
-maisEsq = cataBTree g
-  where g = either (const Nothing) auxMaisEsq
-  
-auxMaisDir :: (a,(Maybe a,Maybe a)) -> Maybe a
-auxMaisDir (h,(l,Nothing)) = Just h 
-auxMaisDir (_,(_,r)) = r
-
 maisDir :: BTree a -> Maybe a
-maisDir = cataBTree g
-  where g = either (const Nothing) auxMaisDir
 \end{code}
   Seguem alguns exemplos dos resultados que se esperam ao aplicar
   estas funções à árvore da esquerda ($t1$) e à árvore da direita ($t2$)
@@ -982,8 +969,7 @@ outras funções auxiliares que sejam necessárias.
 \subsection*{Problema 1}
 \begin{code}
 discollect :: (Ord b, Ord a) => [(b, [a])] -> [(b, a)]
-discollect [] = []
-discollect ((a,x):y) = [(a,b)|b<-x] ++ discollect y
+discollect = undefined
 
 dic_exp :: Dict -> [(String,[String])]
 dic_exp = collect . tar
@@ -1000,11 +986,19 @@ dic_in = undefined
 \subsection*{Problema 2}
 
 \begin{code}
+auxMaisDir :: (a,(Maybe a,Maybe a)) -> Maybe a
+auxMaisDir (h,(l,Nothing)) = Just h 
+auxMaisDir (_,(_,r)) = r
+
 maisDir = cataBTree g
-  where g = undefined
+  where g = either (const Nothing) auxMaisDir
+
+auxMaisEsq :: (a,(Maybe a,Maybe a)) -> Maybe a
+auxMaisEsq (h,(Nothing,r)) = Just h
+auxMaisEsq (_,(l,_)) = l  
 
 maisEsq = cataBTree g
-  where g = undefined
+  where g = either (const Nothing) auxMaisEsq
 
 insOrd' x = cataBTree g 
   where g = undefined

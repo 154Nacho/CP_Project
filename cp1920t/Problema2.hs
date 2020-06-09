@@ -35,30 +35,24 @@ maisDir :: BTree a -> Maybe a
 maisDir = cataBTree g
   where g = either (const Nothing) auxMaisDir
 
-
-
-
-
-
-
-prop_inv :: BTree String -> Bool
-prop_inv = maisEsq .==. maisDir . invBTree
-
 infixr 4 .==.
 (.==.) :: Eq b => (a -> b) -> (a -> b) -> (a -> Bool)
 f .==. g = \a -> f a == g a
 
-{- 
-maisDir :: BTree a -> Maybe a
-maisDir = cataBTree g
-  where g = undefined
+prop_inv :: BTree String -> Bool
+prop_inv = maisEsq .==. maisDir . invBTree
 
-
+insOrd' :: (Ord a) => a -> BTree a -> (BTree a, BTree a)
 insOrd' x = cataBTree g 
-  where g = undefined
+  where g = split insOrd x a 
 
 
-insOrd a x = undefined
+{- 
+insOrd :: (Ord a) ⇒ a → BTree a → BTree a
+insOrd a x = 
+
+
+
 
 
 isOrd' = cataBTree g
@@ -87,7 +81,7 @@ splay l t =  undefined
     Just 8
 *Splay> maisEsq t2
     Just 0
--}
+
 
 emp x = Node(x,(Empty,Empty))
 
@@ -100,3 +94,8 @@ t1 = Node(5,(t1_2_nil, t7_10_16))
 t0_2_1 = Node(2, (emp 0, emp 3))
 t5_6_8 = Node(6, (emp 5, emp 8))
 t2 = Node(4, (t0_2_1, t5_6_8))
+
+
+
+
+-}
