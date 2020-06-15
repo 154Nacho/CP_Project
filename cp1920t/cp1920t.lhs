@@ -986,6 +986,7 @@ dic_in = undefined
 \subsection*{Problema 2}
 
 \begin{code}
+
 auxMaisDir :: (a,(Maybe a,Maybe a)) -> Maybe a
 auxMaisDir (h,(l,Nothing)) = Just h
 auxMaisDir (_,(_,r)) = r
@@ -1015,10 +1016,19 @@ auxisOrd l | l == qSort(l) = True
 
 isOrd = auxisOrd . inordt
 
+auxRRot :: (a,(BTree a, BTree a)) -> BTree a
+auxRRot (h,(Empty,r)) = Node(h,(Empty,r))
+auxRRot (h,((Node(l,(ll,lr))),r)) = Node(l,(ll,Node(h,(lr,r))))
 
-rrot = undefined
+rrot = cataBTree g
+  where g = either (const Empty) auxRRot
 
-lrot = undefined
+auxLRot :: (a,(BTree a, BTree a)) -> BTree a
+auxLRot (h,(l,Empty)) = Node(h,(l,Empty))
+auxLRot (h,(l,(Node(r,(rl,rr))))) = Node(r,((Node(h,(rl,l))),rr))
+
+lrot = cataBTree g
+  where g = either (const Empty) auxLRot
 
 splay l t =  undefined
 
