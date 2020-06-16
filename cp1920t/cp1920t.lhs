@@ -969,7 +969,7 @@ outras funções auxiliares que sejam necessárias.
 \subsection*{Problema 1}
 \begin{code}
 discollect :: (Ord b, Ord a) => [(b, [a])] -> [(b, a)]
-discollect = undefined
+discollect = lstr .! id
 
 dic_exp :: Dict -> [(String,[String])]
 dic_exp = collect . tar
