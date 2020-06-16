@@ -1020,17 +1020,18 @@ auxRRot :: (a,(BTree a, BTree a)) -> BTree a
 auxRRot (h,(Empty,r)) = Node(h,(Empty,r))
 auxRRot (h,((Node(l,(ll,lr))),r)) = Node(l,(ll,Node(h,(lr,r))))
 
-rrot = cataBTree g
+rrot =  g . outBTree
   where g = either (const Empty) auxRRot
 
 auxLRot :: (a,(BTree a, BTree a)) -> BTree a
 auxLRot (h,(l,Empty)) = Node(h,(l,Empty))
 auxLRot (h,(l,(Node(r,(rl,rr))))) = Node(r,((Node(h,(rl,l))),rr))
 
-lrot = cataBTree g
+lrot = g . outBTree
   where g = either (const Empty) auxLRot
 
-splay l t =  undefined
+splay l t = undefined
+  where g = undefined
 
 \end{code}
 
@@ -1074,15 +1075,6 @@ bnavLTree = cataLTree g
         k ((l1,r1),(Node(a,(l2,Empty))))    | a == True = l1 l2
                                             | otherwise = r1 Empty
 
-{-    F
-      |\
-     |  \
-    |    \
-          F
-         | \
-        |   \
-             FINAL
--}
 
 pbnavLTree = cataLTree g
   where g = undefined
