@@ -1057,7 +1057,10 @@ anaBdt g = inBdt . (recBdt (anaBdt g)) . g
 
 navLTree :: LTree a -> ([Bool] -> LTree a)
 navLTree = cataLTree g
-  where g = undefined
+  where g = either (flip(const Leaf)) (curry k)
+        k ((l,r),[]) = Fork(l [], r[])
+        k ((l,r),(h:t)) | h == True = l t
+                        | otherwise = r t
 \end{code}
 
 
