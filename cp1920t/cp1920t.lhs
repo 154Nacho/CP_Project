@@ -1065,16 +1065,24 @@ navLTree = cataLTree g
 
 
 \subsection*{Problema 4}
-
 \begin{code}
 bnavLTree = cataLTree g
   where g = either (flip(const Leaf)) (curry k)
         k ((l1,r1),Empty) = Fork(l1 Empty,r1 Empty)
-        k ((l1,r1),(Node(a,(Empty,r2))))    | a == True = Fork(l1 Empty, r1 Empty)
-                                            | otherwise = l1 r2
-        k ((l1,r1),(Node(a,(l2,Empty))))    | a == True = r1 l2
-                                            | otherwise = Fork(l1 Empty, r1 Empty)
+        k ((l1,r1),(Node(a,(Empty,r2))))    | a == True = l1 Empty
+                                            | otherwise = r1 r2
+        k ((l1,r1),(Node(a,(l2,Empty))))    | a == True = l1 l2
+                                            | otherwise = r1 Empty
 
+{-    F
+      |\
+     |  \
+    |    \
+          F
+         | \
+        |   \
+             FINAL
+-}
 
 pbnavLTree = cataLTree g
   where g = undefined
