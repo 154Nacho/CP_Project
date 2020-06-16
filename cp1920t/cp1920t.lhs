@@ -113,13 +113,13 @@
 
 \begin{center}\large
 \begin{tabular}{ll}
-\textbf{Grupo} nr. & 99 (preencher)
+\textbf{Grupo} nr. & 6
 \\\hline
-a11111 & Nome1 (preencher)
+a89588 & João Pedro da Santa Guedes
 \\
-a22222 & Nome2 (preencher)
+a89601 & Luís Pedro Oliveira de Castro Vieira
 \\
-a33333 & Nome3 (preencher)
+a89529 & Pedro Miguel Soveral Pachebo Barbosa
 \end{tabular}
 \end{center}
 
@@ -1070,17 +1070,16 @@ navLTree = cataLTree g
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
     |Bdt B|
-           \ar[r]_-{|outBdt|}
 &
     |B(B,Bdt B)|
            \ar[l]_-{|inBdt|}
 \\
      |A|
-         \ar[u]_-{|anaBdt g|}
+         \ar[u]^-{|anaBdt g|}
          \ar[r]_-{|g|}
 &
      |B(B,A)|
-              \ar[u]^-{|B(id,anaBdt)|}
+              \ar[u]_-{|B(id,anaBdt)|}
 }
 \end{eqnarray*}
 
