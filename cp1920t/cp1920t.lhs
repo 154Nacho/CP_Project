@@ -1030,8 +1030,11 @@ auxLRot (h,(l,(Node(r,(rl,rr))))) = Node(r,((Node(h,(rl,l))),rr))
 lrot = g . outBTree
   where g = either (const Empty) auxLRot
 
-splay l t = undefined
-  where g = undefined
+splay l t = (flip cataBTree t g) l
+  where g = either (\x -> const Empty) (curry k)
+        k ((a,(l,r)),[]) = Node(a,(l [], r[]))
+        k ((a,(l,r)),t) | head t == True = rrot(Node (a,(l (tail t),r [])))
+                        | otherwise = lrot(Node (a,(l [], r (tail t))))
 
 \end{code}
 
@@ -1064,6 +1067,22 @@ navLTree = cataLTree g
                         | otherwise = r t
 \end{code}
 
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |Bdt B|
+           \ar[r]_-{|outBdt|}
+&
+    |B(B,Bdt B)|
+           \ar[l]_-{|inBdt|}
+\\
+     |A|
+         \ar[u]_-{|anaBdt g|}
+         \ar[r]_-{|g|}
+&
+     |B(B,A)|
+              \ar[u]^-{|B(id,anaBdt)|}
+}
+\end{eqnarray*}
 
 \subsection*{Problema 4}
 \begin{code}
