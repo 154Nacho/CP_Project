@@ -1033,10 +1033,10 @@ lrot = g . outBTree
   where g = either (const Empty) auxLRot
 
 splay l t = (flip cataBTree t g) l
-  where g = either (\x -> const Empty) (curry k)
-        k ((a,(l,r)),[]) = Node(a,(l [], r[]))
-        k ((a,(l,r)),t) | head t == True = rrot(Node (a,(l (tail t),r [])))
-                        | otherwise = lrot(Node (a,(l [], r (tail t))))
+  where g = either (\x -> const Empty) (curry sp)
+        sp ((a,(l,r)),[]) = Node(a,(l [], r[]))
+        sp ((a,(l,r)),t) | head t == True = rrot(Node (a,(l (tail t),r [])))
+                         | otherwise = lrot(Node (a,(l [], r (tail t))))
 
 \end{code}
 
@@ -1062,12 +1062,6 @@ cataBdt g = g . (recBdt (cataBdt g)) . outBdt
 
 anaBdt g = inBdt . (recBdt (anaBdt g)) . g
 
-navLTree :: LTree a -> ([Bool] -> LTree a)
-navLTree = cataLTree g
-  where g = either (flip(const Leaf)) (curry k)
-        k ((l,r),[]) = Fork(l [], r[])
-        k ((l,r),(h:t)) | h == True = l t
-                        | otherwise = r t
 \end{code}
 
 \begin{eqnarray*}
@@ -1086,25 +1080,33 @@ navLTree = cataLTree g
 }
 \end{eqnarray*}
 
+\begin{code}
+
+navLTree :: LTree a -> ([Bool] -> LTree a)
+navLTree = cataLTree g
+  where g = either (flip(const Leaf)) (curry nav)
+        nav ((l,r),[]) = Fork(l [], r[])
+        nav ((l,r),(h:t)) | h == True = l t
+                          | otherwise = r t
+\end{code}
+
+
+
 \subsection*{Problema 4}
 \begin{code}
 
 bnavLTree = cataLTree g
-  where g = either (flip(const Leaf)) (curry k)
-        k ((l1,r1),Empty) = Fork(l1 Empty,r1 Empty)
-        k ((l1,r1),(Node(a,(Empty,r2))))    | a == True = l1 Empty
-                                            | otherwise = r1 r2
-        k ((l1,r1),(Node(a,(l2,Empty))))    | a == True = l1 l2
-                                            | otherwise = r1 Empty-}
+  where g = either (flip(const Leaf)) (curry bnav)
+        bnav ((l1,r1),Empty) = Fork(l1 Empty,r1 Empty)
+        bnav ((l1,r1),(Node(a,(Empty,r2))))  | a == True = l1 Empty
+                                             | otherwise = r1 r2
+        bnav ((l1,r1),(Node(a,(l2,Empty))))  | a == True = l1 l2
+                                             | otherwise = r1 Empty
 
 
 pbnavLTree = cataLTree g
-  where g = either (\x -> return (const Leaf)) (curry k)
-        k ((l,r),Empty) = undefined
-        k ((l,r),(Node(a,(Empty,r2)))) | p1(head (sortP(unD a))) == True = undefined
-                                       | otherwise = undefined
-        k ((l,r),(Node(a,(l2,Empty)))) | p1(head (sortP(unD a))) == True = undefined
-                                       | otherwise = undefined-}
+  where g = undefined
+
 
 
 
@@ -1130,6 +1132,44 @@ janela = InWindow
 put  = uncurry Translate
 
 -------------------------------------------------
+
+p5::IO()
+p5 = do let pics = [truchet1,truchet2]
+            finalImage = (render pics) is
+            render pics = fmap (drawFullImage pics (-400) (-400))
+        (display janela white) =<< (finalImage)
+
+
+is::IO[[Int]]
+is = rmatriz 10 10
+
+
+drawFullImage :: [Picture] -> Float -> Float -> [[Int]] -> Picture
+drawFullImage pics _ _ [] = blank
+drawFullImage pics x y (m:ms) = pictures [(drawList pics x y m), (drawFullImage pics (x+80) y ms)]
+
+
+drawList::[Picture] -> Float -> Float -> [Int] -> Picture
+drawList pics _ _ [] = blank
+drawList pics x y (l:ls) = pictures[put(x,y) (pics !! l), drawList pics x (y+80) ls]
+
+rlista :: Int -> IO [Int]
+rlista 0 = return []
+rlista x = do
+  l <- randomRIO(0,1)
+  ls <- rlista (x-1)
+  return (l:ls)
+
+
+rmatriz::Int -> Int -> IO [[Int]]
+rmatriz 0 _ = return []
+rmatriz _ 0 = return []
+rmatriz x y = do
+  m <- rlista x
+  ms <- rmatriz (x-1) y
+  return (m:ms)
+
+
 \end{code}
 
 %----------------- Fim do anexo com soluções dos alunos ------------------------%
