@@ -999,10 +999,13 @@ auxMaisEsq (_,(l,_)) = l
 maisEsq = cataBTree g
   where g = either (const Nothing) auxMaisEsq
 
-{-insOrd' x = cataBTree g
-  where g = either (const(True,(h,((b1,Empty),(b2,Empty))))) auxInsOrd
+auxInsOrd x (h,((ll1,lr1),(rl1,rr1))) | x > h = (Node(h,(lr1,rl1)),Node(h,(lr1,rr1)))
+                                      | otherwise = (Node(h,(ll1,rr1)),Node(h,(lr1,rr1)))
 
-insOrd a x = p1 . insOrd' a x-}
+insOrd' x = cataBTree g
+  where g = either (const (Node(x,(Empty,Empty)),Empty)) (auxInsOrd x) 
+
+insOrd x = p1 . insOrd' x
 
 getRoot (Node(h,(l,r))) = h
 
@@ -1085,25 +1088,29 @@ navLTree = cataLTree g
 
 \subsection*{Problema 4}
 \begin{code}
+
 bnavLTree = cataLTree g
-  where g = either (flip(const Leaf)) (curry k)
+  where g = undefined
+
+    {-either (flip(const Leaf)) (curry k)
         k ((l1,r1),Empty) = Fork(l1 Empty,r1 Empty)
         k ((l1,r1),(Node(a,(Empty,r2))))    | a == True = l1 Empty
                                             | otherwise = r1 r2
         k ((l1,r1),(Node(a,(l2,Empty))))    | a == True = l1 l2
-                                            | otherwise = r1 Empty
+                                            | otherwise = r1 Empty-}
 
 
 pbnavLTree = cataLTree g
-  where g = either (\x -> return (const Leaf)) (curry k)
+  where g = undefined
+
+    {-either (\x -> return (const Leaf)) (curry k)
         k ((l,r),Empty) = undefined
         k ((l,r),(Node(a,(Empty,r2)))) | p1(head (sortP(unD a))) == True = undefined
                                        | otherwise = undefined
         k ((l,r),(Node(a,(l2,Empty)))) | p1(head (sortP(unD a))) == True = undefined
-                                       | otherwise = undefined
+                                       | otherwise = undefined-}
 
-
-
+                                       
 
 \end{code}
 
