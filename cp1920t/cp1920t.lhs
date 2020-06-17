@@ -972,7 +972,7 @@ discollect :: (Ord b, Ord a) => [(b, [a])] -> [(b, a)]
 discollect = set . (lstr .! id)
 \end{code}
 
-A função dic_exp tem a funcionalidade de transformar um dicionário numa lista de pares palavra,tradução.
+A função dic-exp tem a funcionalidade de transformar um dicionário numa lista de pares palavra,tradução.
 Deste modo fazemos um catamorfismo Exp, no qual temos um either que ou conserva o nosso Var ou então
 junta as letras dos diferentes nodos do dicionário que irão formar a respetiva palavra seguida da sua tradução.
 Por fim, como obtivemos uma lista de listas e apenas pretendiamos ter uma lista recorremos à função concat.
@@ -986,8 +986,8 @@ tar = cataExp g where
     auxJunta (x,y) = ((o++x),y)
 \end{code}
 
-A função dic_rd tem a funcionalidade de procurar traduções para uma dada palavra.
-Deste modo começamos por lhe aplicar a função dic_exp para passarmos a ter uma lista de pares palavra-tradução
+A função dic-rd tem a funcionalidade de procurar traduções para uma dada palavra.
+Deste modo começamos por lhe aplicar a função dic-exp para passarmos a ter uma lista de pares palavra-tradução
 e de seguida aplicamos-lhe um catamorfismo de listas.
 Este catamorfismo é composto por um either Nothing ou uma função auxiliar que tem como objetivo
 comparar a palavra da qual pretendemos obter a tradução com as palavras do dicionário.
@@ -1062,6 +1062,8 @@ lrot = g . outBTree
   where g = either (const Empty) auxLRot
 
 \end{code}
+
+\subsubsection{splay}
 
 Para conseguirmos perceber o que realmente é pretendido com a função splay,
 devemos averiguar primeiro o tipo que ela apresenta. Assim, podemos concluir
@@ -1209,6 +1211,8 @@ navLTree = cataLTree g
 
 \subsection*{Problema 4}
 
+\subsubsection{bnavLTree}
+
 De forma a perceber o que realmente é pretendido com a função splay,
 devemos averiguar primeiro o tipo que ela apresenta. Assim, podemos concluir
 que o nosso objetivo final deve ser retornar uma função, que dada uma BTree de
@@ -1253,7 +1257,7 @@ pbnavLTree = cataLTree g
 \end{code}
 
 \begin{eqnarray*}
-\xymatrix@@C=2cm{
+\xymatrix@@C=3cm{
     |LTree A|
           \ar[r]^-{|outBTree|}
           \ar[d]_-{|pbnavLTree|}
@@ -1261,9 +1265,9 @@ pbnavLTree = cataLTree g
     |A + (LTree A >< LTree A)|
            \ar[d]^-{|id + (pbnavLTree >< pbnavLTree)|}
 \\
-     |Dist (LTree A)|
+     |(Dist(LTree A)^(BTree(Dist Bool)))|
 &
-     |A + ( (BTree(Dist Bool)) >< (BTree(Dist Bool)) )|
+     |A + ( (Dist(LTree A)^(BTree(Dist Bool)))) ^ 2|
               \ar[l]^-{|g|}
 }
 \end{eqnarray*}
@@ -1292,12 +1296,12 @@ put  = uncurry Translate
 
 De forma a gerarmos um mosaico de Truchet-Smith devemos pensar neste
 como se fosse uma matriz de imagens truchet1 e truchet2. Estas por sua vez
-devem ser vistas como simples 0s e 1s. A partir daqui podemos gerar uma lista
-aleatória de uma dada dimensão N, formada por vários 0s e 1s. Substituindo os 0s
-pela imagem truchet1 e os 1s pela imagem truchet2 obtemos uma linha do mosaico a gerar.
+devem ser vistas como simples zeros e uns. A partir daqui podemos gerar uma lista
+aleatória de uma dada dimensão N, formada por vários zeros e uns. Substituindo os zeros
+pela imagem truchet1 e os uns pela imagem truchet2 obtemos uma linha do mosaico a gerar.
 Assim só temos que repetir o processo de forma a gerar o restante número de linhas
 necessárias para obtermos a imagem completa. Assim, o nosso mosaico de Truchet-Smith
-pode ser visto como uma matriz de 0s e 1s que são posteriormente substituídos pelas imagens associadas.
+pode ser visto como uma matriz de zeros e uns que são posteriormente substituídos pelas imagens associadas.
 
 \begin{code}
 main :: IO()
