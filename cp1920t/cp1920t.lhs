@@ -1038,6 +1038,7 @@ splay l t = (flip cataBTree t g) l
 
 \end{code}
 
+
 \subsection*{Problema 3}
 
 \begin{code}
@@ -1095,7 +1096,15 @@ bnavLTree = cataLTree g
 
 
 pbnavLTree = cataLTree g
-  where g = undefined
+  where g = either (\x -> return (const Leaf)) (curry k)
+        k ((l,r),Empty) = undefined
+        k ((l,r),(Node(a,(Empty,r2)))) | p1(head (sortP(unD a))) == True = l >>= Empty
+                                       | otherwise = l >>= r2
+        k ((l,r),(Node(a,(l2,Empty)))) | p1(head (sortP(unD a))) == True = undefined
+                                       | otherwise = undefined
+
+
+
 
 \end{code}
 
