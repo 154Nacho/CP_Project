@@ -1099,9 +1099,7 @@ bnavLTree = cataLTree g
 
 
 pbnavLTree = cataLTree g
-  where g = undefined
-
-    {-either (\x -> return (const Leaf)) (curry k)
+  where g = either (\x -> return (const Leaf)) (curry k)
         k ((l,r),Empty) = undefined
         k ((l,r),(Node(a,(Empty,r2)))) | p1(head (sortP(unD a))) == True = undefined
                                        | otherwise = undefined
