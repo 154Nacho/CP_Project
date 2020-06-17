@@ -970,8 +970,13 @@ outras funções auxiliares que sejam necessárias.
 \begin{code}
 discollect :: (Ord b, Ord a) => [(b, [a])] -> [(b, a)]
 discollect = set . (lstr .! id)
+\end{code}
 
-{- A função dic_exp tem a funcionalidade de transformar um dicionário numa lista de pares palavra,tradução. Deste modo fazemos um catamorfismo Exp, no qual temos um either que ou conserva o nosso Var ou então junta as letras dos diferentes nodos do dicionário que irão formar a respetiva palavra seguida da sua tradução. Por fim, como obtivemos uma lista de listas e apenas pretendiamos ter uma lista recorremos à função concat -}
+A função dic_exp tem a funcionalidade de transformar um dicionário numa lista de pares palavra,tradução.
+Deste modo fazemos um catamorfismo Exp, no qual temos um either que ou conserva o nosso Var ou então
+junta as letras dos diferentes nodos do dicionário que irão formar a respetiva palavra seguida da sua tradução.
+Por fim, como obtivemos uma lista de listas e apenas pretendiamos ter uma lista recorremos à função concat.
+\begin{code}
 dic_exp :: Dict -> [(String,[String])]
 dic_exp = collect . tar
 tar = cataExp g where
@@ -979,8 +984,15 @@ tar = cataExp g where
   conserva x = [("",x)]
   junta (o,l) = map (auxJunta) (concat l) where
     auxJunta (x,y) = ((o++x),y)
+\end{code}
 
-{- A função dic_rd tem a funcionalidade de procurar traduções para uma dada palavra. Deste modo começamos por lhe aplicar a função dic_exp para passarmos a ter uma lista de pares palavra-tradução e de seguida aplicamos-lhe um catamorfismo de listas. Este catamorfismo é composto por um either Nothing ou uma função auxiliar que tem como objetivo comparar a palavra da qual pretendemos obter a tradução com as palavras do dicionário. Se encontrar essa palavra no dicionário retorna a sua tradução-}
+A função dic_rd tem a funcionalidade de procurar traduções para uma dada palavra.
+Deste modo começamos por lhe aplicar a função dic_exp para passarmos a ter uma lista de pares palavra-tradução
+e de seguida aplicamos-lhe um catamorfismo de listas.
+Este catamorfismo é composto por um either Nothing ou uma função auxiliar que tem como objetivo
+comparar a palavra da qual pretendemos obter a tradução com as palavras do dicionário.
+Se encontrar essa palavra no dicionário retorna a sua tradução
+\begin{code}
 dic_rd d = (cataList g) . dic_exp where
   g = either (const Nothing) auxDicRD where
     auxDicRD ((p,tp),t) | d == p = Just tp
