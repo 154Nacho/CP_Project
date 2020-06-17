@@ -979,7 +979,10 @@ tar = cataExp g where
   junta (o,l) = map (auxJunta) (concat l) where
     auxJunta (x,y) = ((o++x),y)
 
-dic_rd = undefined
+dic_rd d = (cataList g) . dic_exp where
+  g = either (const Nothing) auxDicRD where 
+    auxDicRD ((p,tp),t) | d == p = Just tp
+                        | otherwise = t
 
 dic_in = undefined
 
