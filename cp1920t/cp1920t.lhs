@@ -1003,7 +1003,7 @@ auxInsOrd x (h,((ll1,lr1),(rl1,rr1))) | x > h = (Node(h,(lr1,rl1)),Node(h,(lr1,r
                                       | otherwise = (Node(h,(ll1,rr1)),Node(h,(lr1,rr1)))
 
 insOrd' x = cataBTree g
-  where g = either (const (Node(x,(Empty,Empty)),Empty)) (auxInsOrd x) 
+  where g = either (const (Node(x,(Empty,Empty)),Empty)) (auxInsOrd x)
 
 insOrd x = p1 . insOrd' x
 
@@ -1090,9 +1090,7 @@ navLTree = cataLTree g
 \begin{code}
 
 bnavLTree = cataLTree g
-  where g = undefined
-
-    {-either (flip(const Leaf)) (curry k)
+  where g = either (flip(const Leaf)) (curry k)
         k ((l1,r1),Empty) = Fork(l1 Empty,r1 Empty)
         k ((l1,r1),(Node(a,(Empty,r2))))    | a == True = l1 Empty
                                             | otherwise = r1 r2
@@ -1110,7 +1108,7 @@ pbnavLTree = cataLTree g
         k ((l,r),(Node(a,(l2,Empty)))) | p1(head (sortP(unD a))) == True = undefined
                                        | otherwise = undefined-}
 
-                                       
+
 
 \end{code}
 
