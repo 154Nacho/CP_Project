@@ -980,7 +980,7 @@ tar = cataExp g where
     auxJunta (x,y) = ((o++x),y)
 
 dic_rd d = (cataList g) . dic_exp where
-  g = either (const Nothing) auxDicRD where 
+  g = either (const Nothing) auxDicRD where
     auxDicRD ((p,tp),t) | d == p = Just tp
                         | otherwise = t
 
@@ -997,13 +997,17 @@ auxMaisDir (_,(_,r)) = r
 
 maisDir = cataBTree g
   where g = either (const Nothing) auxMaisDir
+\end{code}
 
+\begin{code}
 auxMaisEsq (h,(Nothing,r)) = Just h
 auxMaisEsq (_,(l,_)) = l
 
 maisEsq = cataBTree g
   where g = either (const Nothing) auxMaisEsq
+\end{code}
 
+\begin{code}
 auxInsOrd x (h,((ll1,lr1),(rl1,rr1))) | x > h = (Node(h,(lr1,rl1)),Node(h,(lr1,rr1)))
                                       | otherwise = (Node(h,(ll1,rr1)),Node(h,(lr1,rr1)))
 
@@ -1011,7 +1015,9 @@ insOrd' x = cataBTree g
   where g = either (const (Node(x,(Empty,Empty)),Empty)) (auxInsOrd x)
 
 insOrd x = p1 . insOrd' x
+\end{code}
 
+\begin{code}
 getRoot (Node(h,(l,r))) = h
 
 auxIsOrd (a,((b1,Empty),(b2,Empty))) = (True,Node(a,(Empty,Empty)))
@@ -1024,18 +1030,37 @@ isOrd' = cataBTree g
   where g = either (const(True,Empty)) auxIsOrd
 
 isOrd = p1 . isOrd'
+\end{code}
 
+\begin{code}
 auxRRot (h,(Empty,r)) = Node(h,(Empty,r))
 auxRRot (h,((Node(l,(ll,lr))),r)) = Node(l,(ll,Node(h,(lr,r))))
 
 rrot =  g . outBTree
   where g = either (const Empty) auxRRot
+\end{code}
 
+\begin{code}
 auxLRot (h,(l,Empty)) = Node(h,(l,Empty))
 auxLRot (h,(l,(Node(r,(rl,rr))))) = Node(r,((Node(h,(rl,l))),rr))
 
 lrot = g . outBTree
   where g = either (const Empty) auxLRot
+
+\end{code}
+
+Para conseguirmos perceber o que realmente é pretendido com a função splay,
+devemos averiguar primeiro o tipo que ela apresenta. Assim, podemos concluir
+que o nosso objetivo final deve ser retornar uma função, que dada uma BTree de
+Bool, nos devolve uma LTree. Ainda mais, devemos compreender que somos capazes
+de trabalhar com a versão curried desta função, isto é, trabalharemos a lista de Bool
+e a BTree como se fosse um par, permitindo assim saber qual o valor à cabeça da lista,
+e efetuar uma rotação da àrvore como dito no enunciado: se o valor for True,
+vamos efetuar uma rotação à direita, se for False vamos efetuar uma rotação à esquerda.
+O nosso objetivo é através de múltiplas rotações colocarmos um elemento no topo da raíz que nos
+permita fazer uma busca vertical efetiva.
+
+\begin{code}
 
 splay l t = (flip cataBTree t g) l
   where g = either (\x -> const Empty) (curry sp)
@@ -1045,26 +1070,73 @@ splay l t = (flip cataBTree t g) l
 
 \end{code}
 
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |BTree A|
+          \ar[r]^-{|outBTree|}
+          \ar[d]_-{|cataBTree|}
+&
+    |1 + (A >< (BTree A >< BTree A))|
+           \ar[d]^-{|id + id >< (cataBTree >< cataBTree)|}
+\\
+     |(BTree A^Bool*)|
+&
+     | 1 + A >< ( ((BTree A)^Bool*) >< ((BTree A)^Bool*) )|
+              \ar[l]^-{|g|}
+}
+\end{eqnarray*}
 
 \subsection*{Problema 3}
+
+A extLTree tem como objetivo transformar uma Bdt numa LTree.
+Como dito no enunciado, devemos ignorar o conteúdo no nodo da àrvore
+e guardar somente as bifurcações no Fork da LTree e a Dec na Leaf.
 
 \begin{code}
 extLTree :: Bdt a -> LTree a
 extLTree = cataBdt g where
   g = either Leaf (Fork . p2)
 
+
+\end{code}
+
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |Bdt A|
+          \ar[r]^-{|outBdt|}
+          \ar[d]_-{|extLTree|}
+&
+    |Dec + String >< (Bdt A >< Bdt A)|
+           \ar[d]^-{|id + id >< (ex >< splay)|}
+\\
+     |(BTree A^Bool*)|
+&
+     |Dec + A >< ( ((BTree A)^Bool*) >< ((BTree A)^Bool*) )|
+              \ar[l]^-{|g|}
+}
+\end{eqnarray*}
+
+\begin{code}
 inBdt :: Either a (String,(Bdt a,Bdt a)) -> Bdt a
 inBdt = either Dec Query
+\end{code}
 
+\begin{code}
 outBdt :: Bdt a -> Either a (String,(Bdt a,Bdt a))
 outBdt (Dec x)            = i1(x)
 outBdt (Query(s,(t1,t2))) = i2(s,(t1,t2))
+\end{code}
 
+\begin{code}
 baseBdt f g = id -|- ( f >< ( g >< g))
 recBdt g    = baseBdt id g
+\end{code}
 
+\begin{code}
 cataBdt g = g . (recBdt (cataBdt g)) . outBdt
+\end{code}
 
+\begin{code}
 anaBdt g = inBdt . (recBdt (anaBdt g)) . g
 
 \end{code}
@@ -1085,6 +1157,16 @@ anaBdt g = inBdt . (recBdt (anaBdt g)) . g
 }
 \end{eqnarray*}
 
+\subsubsection{navLTree}
+
+Para perceber o que realmente é pretendido com a função navLTree,
+devemos averiguar primeiro o tipo que ela apresenta. Assim, podemos concluir
+que o nosso objetivo final deve ser retornar uma função, que dada uma lista de
+Bool, nos devolve uma LTree. Ainda mais, devemos compreender que somos capazes
+de trabalhar com a versão curried desta função, isto é, trabalharemos a lista de
+Bool e a LTree como se fosse um par, permitindo assim saber qual o elemento à cabeça
+da lista de Bool, o que nos permite avançar conforme pede o enunciado: se for True
+avança para a esquerda, se for False avança para a direita.
 
 \begin{code}
 
@@ -1092,31 +1174,85 @@ navLTree :: LTree a -> ([Bool] -> LTree a)
 navLTree = cataLTree g
   where g = either (flip(const Leaf)) (curry nav)
         nav ((l,r),[]) = Fork(l [], r[])
-        nav ((l,r),(h:t)) | h == True = l t
-                          | otherwise = r t
+        nav ((l,r),(h:t)) = if h then l t else r t
 \end{code}
 
-
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |LTree A|
+          \ar[r]^-{|outBTree|}
+          \ar[d]_-{|navLTree|}
+&
+    |A + (LTree A >< LTree A)|
+           \ar[d]^-{|id + (navLTree >< navLTree)|}
+\\
+     |(LTree A^Bool*)|
+&
+     |A + ( ((LTree A)^Bool*) >< ((LTree A)^Bool*) )|
+              \ar[l]^-{|g|}
+}
+\end{eqnarray*}
 
 \subsection*{Problema 4}
+
+De forma a perceber o que realmente é pretendido com a função splay,
+devemos averiguar primeiro o tipo que ela apresenta. Assim, podemos concluir
+que o nosso objetivo final deve ser retornar uma função, que dada uma BTree de
+Bool, nos devolve uma LTree. Ainda mais, devemos compreender que somos capazes
+de trabalhar com a versão curried desta função, isto é, trabalharemos a BTree de
+Bool e a LTree como se fosse um par, permitindo assim saber qual o valor no nodo da Àrvore,
+e efetuar uma rotação da àrvore como dito no enunciado: se o valor no nodo for True
+avança para o lado esquerdo, se for False avança para a direita.
+
 \begin{code}
 
 bnavLTree = cataLTree g
   where g = either (flip(const Leaf)) (curry bnav)
         bnav ((l1,r1),Empty) = Fork(l1 Empty,r1 Empty)
-        bnav ((l1,r1),(Node(a,(Empty,r2))))  | a == True = l1 Empty
-                                             | otherwise = r1 r2
-        bnav ((l1,r1),(Node(a,(l2,Empty))))  | a == True = l1 l2
-                                             | otherwise = r1 Empty
+        bnav ((l1,r1),(Node(a,(Empty,r2))))  = if a then l1 Empty else r1 r2
+        bnav ((l1,r1),(Node(a,(l2,Empty))))  = if a then l1 l2 else r1 Empty
 
+\end{code}
+
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |LTree A|
+          \ar[r]^-{|outBTree|}
+          \ar[d]_-{|bnavLTree|}
+&
+    |A + (LTree A >< LTree A)|
+           \ar[d]^-{|id + (bnavLTree >< bnavLTree)|}
+\\
+     |(LTree A^ BTree Bool)|
+&
+     |A + ( ((LTree A)^(BTree Bool) >< ((LTree A)^(BTree Bool) )|
+              \ar[l]^-{|g|}
+}
+\end{eqnarray*}
+
+
+\begin{code}
 
 pbnavLTree = cataLTree g
   where g = undefined
 
-
-
-
 \end{code}
+
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |LTree A|
+          \ar[r]^-{|outBTree|}
+          \ar[d]_-{|pbnavLTree|}
+&
+    |A + (LTree A >< LTree A)|
+           \ar[d]^-{|id + (pbnavLTree >< pbnavLTree)|}
+\\
+     |Dist (LTree A)|
+&
+     |A + ( (BTree(Dist Bool)) >< (BTree(Dist Bool)) )|
+              \ar[l]^-{|g|}
+}
+\end{eqnarray*}
 
 \subsection*{Problema 5}
 
@@ -1138,31 +1274,43 @@ janela = InWindow
 put  = uncurry Translate
 
 -------------------------------------------------
+\end{code}
 
+De forma a gerarmos um mosaico de Truchet-Smith devemos pensar neste
+como se fosse uma matriz de imagens truchet1 e truchet2. Estas por sua vez
+devem ser vistas como simples 0s e 1s. A partir daqui podemos gerar uma lista
+aleatória de uma dada dimensão N, formada por vários 0s e 1s. Substituindo os 0s
+pela imagem truchet1 e os 1s pela imagem truchet2 obtemos uma linha do mosaico a gerar.
+Assim só temos que repetir o processo de forma a gerar o restante número de linhas
+necessárias para obtermos a imagem completa. Assim, o nosso mosaico de Truchet-Smith
+pode ser visto como uma matriz de 0s e 1s que são posteriormente substituídos pelas imagens associadas.
+
+\begin{code}
 main :: IO()
 main = do let pics = [truchet1,truchet2]
               finalImage = ((render pics) (rmatriz 10 10))
               render pics = fmap (drawFullImage pics (-400) (-400))
           (display janela white) =<< (finalImage)
+\end{code}
 
-
+\begin{code}
 drawFullImage :: [Picture] -> Float -> Float -> [[Int]] -> Picture
 drawFullImage pics _ _ [] = blank
 drawFullImage pics x y (m:ms) = pictures [(drawList pics x y m), (drawFullImage pics (x+80) y ms)]
+\end{code}
 
-
+\begin{code}
 drawList :: [Picture] -> Float -> Float -> [Int] -> Picture
 drawList pics _ _ [] = blank
 drawList pics x y (l:ls) = pictures[ put(x,y) (pics !! l), drawList pics x (y+80) ls]
+\end{code}
 
+\begin{code}
 rlista :: Int -> IO [Int]
-rlista 0 = return []
-rlista x = do
-    l <- randomRIO(0,1)
-    ls <- rlista (x-1)
-    return (l:ls)
+rlista x = replicateM x (randomRIO(0,1))
+\end{code}
 
-
+\begin{code}
 rmatriz :: Int -> Int -> IO [[Int]]
 rmatriz 0 _ = return []
 rmatriz _ 0 = return []
@@ -1170,9 +1318,13 @@ rmatriz x y = do
     m <- rlista y
     ms <- rmatriz (x-1) (y)
     return (m:ms)
-
-
 \end{code}
+
+\begin{figure}\centering
+\includegraphics[scale=0.30]{images/myProblem5.png}
+\caption{Um mosaico de Truchet-Smith.}
+\label{fig:truchet}
+\end{figure}
 
 %----------------- Fim do anexo com soluções dos alunos ------------------------%
 
