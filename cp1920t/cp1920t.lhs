@@ -969,7 +969,7 @@ outras funções auxiliares que sejam necessárias.
 \subsection*{Problema 1}
 \begin{code}
 discollect :: (Ord b, Ord a) => [(b, [a])] -> [(b, a)]
-discollect = lstr .! id
+discollect = set . (lstr .! id)
 
 dic_exp :: Dict -> [(String,[String])]
 dic_exp = collect . tar
@@ -1097,8 +1097,8 @@ bnavLTree = cataLTree g
 pbnavLTree = cataLTree g
   where g = either (\x -> return (const Leaf)) (curry k)
         k ((l,r),Empty) = undefined
-        k ((l,r),(Node(a,(Empty,r2)))) | p1(head (sortP(unD a))) == True = l >>= Empty
-                                       | otherwise = l >>= r2
+        k ((l,r),(Node(a,(Empty,r2)))) | p1(head (sortP(unD a))) == True = undefined
+                                       | otherwise = undefined
         k ((l,r),(Node(a,(l2,Empty)))) | p1(head (sortP(unD a))) == True = undefined
                                        | otherwise = undefined
 
