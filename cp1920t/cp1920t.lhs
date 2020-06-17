@@ -1082,6 +1082,7 @@ anaBdt g = inBdt . (recBdt (anaBdt g)) . g
 }
 \end{eqnarray*}
 
+
 \begin{code}
 
 navLTree :: LTree a -> ([Bool] -> LTree a)
@@ -1135,15 +1136,11 @@ put  = uncurry Translate
 
 -------------------------------------------------
 
-main::IO()
+main :: IO()
 main = do let pics = [truchet1,truchet2]
-              finalImage = (render pics) is
+              finalImage = ((render pics) (rmatriz 10 10))
               render pics = fmap (drawFullImage pics (-400) (-400))
           (display janela white) =<< (finalImage)
-
-
-is::IO[[Int]]
-is = rmatriz 10 10
 
 
 drawFullImage :: [Picture] -> Float -> Float -> [[Int]] -> Picture
@@ -1151,25 +1148,25 @@ drawFullImage pics _ _ [] = blank
 drawFullImage pics x y (m:ms) = pictures [(drawList pics x y m), (drawFullImage pics (x+80) y ms)]
 
 
-drawList::[Picture] -> Float -> Float -> [Int] -> Picture
+drawList :: [Picture] -> Float -> Float -> [Int] -> Picture
 drawList pics _ _ [] = blank
-drawList pics x y (l:ls) = pictures[put(x,y) (pics !! l), drawList pics x (y+80) ls]
+drawList pics x y (l:ls) = pictures[ put(x,y) (pics !! l), drawList pics x (y+80) ls]
 
 rlista :: Int -> IO [Int]
 rlista 0 = return []
 rlista x = do
-  l <- randomRIO(0,1)
-  ls <- rlista (x-1)
-  return (l:ls)
+    l <- randomRIO(0,1)
+    ls <- rlista (x-1)
+    return (l:ls)
 
 
-rmatriz::Int -> Int -> IO [[Int]]
+rmatriz :: Int -> Int -> IO [[Int]]
 rmatriz 0 _ = return []
 rmatriz _ 0 = return []
 rmatriz x y = do
-  m <- rlista x
-  ms <- rmatriz (x-1) y
-  return (m:ms)
+    m <- rlista y
+    ms <- rmatriz (x-1) (y)
+    return (m:ms)
 
 
 \end{code}
