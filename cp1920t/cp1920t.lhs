@@ -987,43 +987,42 @@ dic_in = undefined
 
 \begin{code}
 
-auxMaisDir :: (a,(Maybe a,Maybe a)) -> Maybe a
 auxMaisDir (h,(l,Nothing)) = Just h
 auxMaisDir (_,(_,r)) = r
 
 maisDir = cataBTree g
   where g = either (const Nothing) auxMaisDir
 
-auxMaisEsq :: (a,(Maybe a,Maybe a)) -> Maybe a
 auxMaisEsq (h,(Nothing,r)) = Just h
 auxMaisEsq (_,(l,_)) = l
 
 maisEsq = cataBTree g
   where g = either (const Nothing) auxMaisEsq
 
-insOrd' x = cataBTree g
-  where g = undefined
+{-insOrd' x = cataBTree g
+  where g = either (const(True,(h,((b1,Empty),(b2,Empty))))) auxInsOrd
 
-insOrd a x = undefined
+insOrd a x = p1 . insOrd' a x-}
+
+getRoot (Node(h,(l,r))) = h
+
+auxIsOrd (a,((b1,Empty),(b2,Empty))) = (True,Node(a,(Empty,Empty)))
+auxIsOrd (a,((b1,Empty),(b2,a2))) | a > getRoot(a2) = (False,Node(a,(Empty,a2)))
+                                  | otherwise = (True,Node(a,(Empty,a2)))
+auxIsOrd (a,((b1,a1),(b2,Empty))) | a < getRoot(a1) = (False,Node(a,(a1,Empty)))
+                                  | otherwise = (True,Node(a,(a1,Empty)))
 
 isOrd' = cataBTree g
-  where g = undefined
+  where g = either (const(True,Empty)) auxIsOrd
 
-auxisOrd :: (Ord a) => [a] -> Bool
-auxisOrd [] = True
-auxisOrd l | l == qSort(l) = True
-           | l /= qSort(l) = False
+isOrd = p1 . isOrd'
 
-isOrd = auxisOrd . inordt
-
-auxRRot :: (a,(BTree a, BTree a)) -> BTree a
 auxRRot (h,(Empty,r)) = Node(h,(Empty,r))
 auxRRot (h,((Node(l,(ll,lr))),r)) = Node(l,(ll,Node(h,(lr,r))))
 
 rrot =  g . outBTree
   where g = either (const Empty) auxRRot
 
-auxLRot :: (a,(BTree a, BTree a)) -> BTree a
 auxLRot (h,(l,Empty)) = Node(h,(l,Empty))
 auxLRot (h,(l,(Node(r,(rl,rr))))) = Node(r,((Node(h,(rl,l))),rr))
 
