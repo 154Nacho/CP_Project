@@ -973,9 +973,11 @@ discollect = set . (lstr .! id)
 
 dic_exp :: Dict -> [(String,[String])]
 dic_exp = collect . tar
-
 tar = cataExp g where
-  g = undefined
+  g = either conserva junta
+  conserva x = [("",x)]
+  junta (o,l) = map (auxJunta) (concat l) where
+    auxJunta (x,y) = ((o++x),y)
 
 dic_rd = undefined
 
@@ -1133,11 +1135,11 @@ put  = uncurry Translate
 
 -------------------------------------------------
 
-p5::IO()
-p5 = do let pics = [truchet1,truchet2]
-            finalImage = (render pics) is
-            render pics = fmap (drawFullImage pics (-400) (-400))
-        (display janela white) =<< (finalImage)
+main::IO()
+main = do let pics = [truchet1,truchet2]
+              finalImage = (render pics) is
+              render pics = fmap (drawFullImage pics (-400) (-400))
+          (display janela white) =<< (finalImage)
 
 
 is::IO[[Int]]
